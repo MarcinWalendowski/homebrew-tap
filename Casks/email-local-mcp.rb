@@ -31,8 +31,10 @@ cask "email-local-mcp" do
   # user who did nothing wrong.
   auto_updates true
 
-  # app/project.yml sets deploymentTarget macOS 13.0.
-  depends_on macos: ">= :ventura"
+  # app/project.yml sets deploymentTarget macOS 13.0. The bare symbol is the
+  # minimum-version form; the `">= :ventura"` string spelling is deprecated and
+  # warns on every `brew tap`.
+  depends_on macos: :ventura
 
   app "Email Local MCP.app"
 
