@@ -30,6 +30,35 @@ The cask does not remove the Gatekeeper step: the app is ad-hoc signed and not
 notarized, so the first launch needs **Open Anyway** in System Settings >
 Privacy & Security.
 
+## If `brew install email-local-mcp` refuses to build
+
+On a macOS **beta or seed build**, Homebrew may refuse the formula with a
+complaint that your Xcode is outdated, naming a version that does not exist
+yet:
+
+```
+Your Xcode (26.6) is too outdated. Please update to Xcode 27.0 or delete it.
+```
+
+This is not about this formula. Homebrew derives the *required* Xcode from the
+OS version, and Apple ships the OS ahead of the matching stable toolchain — so
+on a seed build there is a window where the version Homebrew demands has only
+ever existed as a Beta. Every source build is blocked for the duration, and
+`DEVELOPER_DIR` does not get around it.
+
+Two ways through:
+
+- **Install the cask instead.** `brew install --cask email-local-mcp` ships a
+  prebuilt universal binary and compiles nothing, so the gate never applies.
+- **Or skip Homebrew for the CLI**, which needs only node:
+
+  ```bash
+  npx -y email-local-mcp --help
+  claude mcp add email-local -- npx -y email-local-mcp
+  ```
+
+The formula works normally once a stable Xcode for your macOS version ships.
+
 ## Why a tap and not homebrew-core
 
 homebrew-core does not take node CLIs without established usage, and
