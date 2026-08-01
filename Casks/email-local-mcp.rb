@@ -15,8 +15,8 @@
 # stamps version + sha256 from the release asset and copies it into the tap.
 
 cask "email-local-mcp" do
-  version "0.2.0"
-  sha256 "55c1aefe2da13f5ded461029a0cc2dc9e3a8fb5559f5ca8858e0e9772aa1828a"
+  version "0.3.0"
+  sha256 "f4ea5c0e114e7520ecc4adc47e8fac5044160d47295a249a1458076f20a746e9"
 
   url "https://github.com/MarcinWalendowski/email-local-mcp/releases/download/v#{version}/Email-Local-MCP-#{version}-universal.dmg",
       verified: "github.com/MarcinWalendowski/email-local-mcp/"
@@ -46,14 +46,29 @@ cask "email-local-mcp" do
   # Keychain under the services "email-local-mcp" and "email-local-mcp-oauth",
   # and a cask cannot remove those. caveats says so rather than leaving a user
   # believing zap took everything.
+  # name-check: legacy-ok — the retired bundle id, kept so zap still finds it.
+  #
+  # Both bundle identifiers are listed on purpose. 0.3.0 moved the app from
+  # `com.lokilabs.*` to `pl.marcinwalendowski.*`, and macOS keys these
+  # directories on whichever identifier wrote them — so anyone who ran an
+  # earlier release has state under BOTH. Zapping only the current one leaves
+  # the old Preferences plist behind, which is how a "clean uninstall" quietly
+  # isn't. The old paths stay listed for as long as an 0.2.x install could
+  # plausibly still exist.
   zap trash: [
     "~/.email-local-mcp",
+    "~/Library/Caches/pl.marcinwalendowski.EmailLocalMCP",
+    "~/Library/Caches/pl.marcinwalendowski.EmailLocalMCP.ShipIt",
+    "~/Library/Preferences/pl.marcinwalendowski.EmailLocalMCP.plist",
+    "~/Library/Application Support/pl.marcinwalendowski.EmailLocalMCP",
+    "~/Library/HTTPStorages/pl.marcinwalendowski.EmailLocalMCP",
     "~/Library/Caches/com.lokilabs.EmailLocalMCP",
     "~/Library/Caches/com.lokilabs.EmailLocalMCP.ShipIt",
     "~/Library/Preferences/com.lokilabs.EmailLocalMCP.plist",
     "~/Library/Application Support/com.lokilabs.EmailLocalMCP",
     "~/Library/HTTPStorages/com.lokilabs.EmailLocalMCP",
   ]
+  # name-check: /legacy-ok
 
   caveats do
     <<~EOS
